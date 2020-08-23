@@ -1,0 +1,9 @@
+.python-version
+*.ipynb_checkpoints
+*__pycache__
+tmp/*
+output/*
+*.ipynb
+!model.hdf5
+prod_data
+prod_data.tar.gz

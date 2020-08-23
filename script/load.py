@@ -19,25 +19,11 @@ def read_log_data(dirpath):
 
 def _read_log_data_with_volume(dirpath):
     filepath_list = sorted(os.listdir(dirpath))
-<<<<<<< HEAD
-=======
-    dtype = {
-        "time": object,
-        "over": int,
-        "under": int,
-        "upper_price": int,
-        "downer_price": int,
-        "volume_sum": int,
-        "over_under": float,
-        "hms": object
-    }
->>>>>>> 011511c... s
     df_list = []
     for f in filepath_list:
         print(f)
         s = f.split("_")
         ymd = s[2].replace(".csv", "")
-<<<<<<< HEAD
         df = pandas.read_csv("{}/{}".format(dirpath, f), dtype=DTYPE_2)
         if "volume_sum" not in df.columns:
             continue
@@ -54,17 +40,6 @@ def _read_log_data_with_volume(dirpath):
         df_upper_price["ymd"] = ymd       
 
         df_list.append(df_upper_price)
-=======
-        df = pandas.read_csv("{}/{}".format(dirpath, f), dtype=dtype)
-        if not all([col in df.columns for col in list(dtype.keys())]):
-            continue
-        df = df[list(dtype.keys())]
-        df_1 = _filter_1(df)
-        df_2 = _filter_2(df_1)
-        df_3 = _filter_3(df_2)
-        df_3["ymd"] = ymd
-        df_list.append(df_3)
->>>>>>> 011511c... s
     merge_df = pandas.concat(df_list, axis=0).reset_index(drop=True)
     return merge_df
 

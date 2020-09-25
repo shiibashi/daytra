@@ -3,7 +3,13 @@
 *__pycache__
 tmp/*
 output/*
+script/nohup.out
 *.ipynb
 !model.hdf5
 prod_data
 prod_data.tar.gz
+script/trader/rl/agent_xgb.py
+script/trader/rl/custom_xgb/optimizer.py
+script/trader/rl/custom_xgb/my_xgb.py
+script/trader/rl/custom_xgb/README.md
+script/trader/rl/custom_xgb/my_boosting.py

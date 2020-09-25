@@ -2,8 +2,8 @@ import numpy
 import pandas
 import os
 
-import feature_converter
-import action_class
+from . import feature_converter
+from .action_class import Action
 
 class Env(object):
 
@@ -12,16 +12,17 @@ class Env(object):
         self.state = None
         self.itr = None
         self.time = None
-        self.position = (Action.HOLD, 0)
-        self.fee = 1
-        self.gap = 5
+        self.position = None
+        self.fee = 0#1
+        self.gap = 0#5
 
+        self.trade = None
         self.initialize()
     
     def step(self, action):
         reward = self.calc_reward(action)
         self.itr += 1
-        next_state = feature_converter.convert(self.dataset, self.itr)
+        next_state = self._state()
         done = self.done_flag()
         info = {}
         self.time = self.dataset["hms"][self.itr]
@@ -34,9 +35,21 @@ class Env(object):
         self.time = self.dataset["hms"][self.itr]
         self.ymd = self.dataset["ymd"][self.itr]
         price = self.dataset["upper_price"][self.itr]
-        self.position = (Action.HOLD, price)
-        state = feature_converter.convert(self.dataset, self.itr)
+        self.position = (Action.STAY, price)
+        state = self._state()
+        self.trade = False
         return state
+
+    def _state(self):
+        state = feature_converter.convert(self.dataset, self.itr)
+        if self.position[0] == Action.STAY:
+            position = [0]
+        elif self.position[0] == Action.BUY:
+            position = [1] 
+        else:
+            raise
+        new_state = state + position
+        return new_state
 
     def initialize(self):
         self.itr = 0
@@ -45,8 +58,9 @@ class Env(object):
         price = self.dataset["upper_price"][self.itr]
         if self.position[0] == Action.BUY and action == Action.BUY:
             r = price - self.position[1]
-        elif self.position[0] == Action.BUY and action == Action.HOLD:
+        elif self.position[0] == Action.BUY and action == Action.STAY:
             r = price - self.position[1] - self.fee - self.gap
+            self.trade = True
         else:
             r = 0
         r = r / 100
@@ -54,6 +68,8 @@ class Env(object):
         return r
 
     def done_flag(self):
+        if self.trade:
+            return True
         time = self.dataset["hms"][self.itr]
         ymd = self.dataset["ymd"][self.itr]
         if self.ymd != ymd or self.itr >= len(self.dataset) - 1:

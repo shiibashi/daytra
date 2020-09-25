@@ -1,22 +1,38 @@
 import pandas
 import os
+import datetime
 
 def run(df):
-    #df = df.copy().assign(
-    #    ymd=lambda df: df["time"].apply(lambda x: x[0:10]),
-    #    ba=lambda df: df["hms"].apply(lambda x: _ba(x))
-    #)
+    daily_data = df.groupby("ymd")["upper_price"].agg(
+        [open_value, "max", "min", close_value]
+    ).reset_index().rename(columns={"open_value": "open", "close_value": "close"})
+    for col in ["open", "max", "min", "close"]:
+        col2 = "{}_yesterday".format(col)
+        daily_data[col2] = daily_data[col].shift(1)
+
+    df = df.merge(daily_data, on=["ymd"], how="left")
+    df = df[0:len(df):5].reset_index(drop=True)
+    df["upper_price_ma_5"] = df["upper_price"].rolling(5).mean()
+    df["upper_price_ma_25"] = df["upper_price"].rolling(25).mean()
+    df["upper_price_ma_75"] = df["upper_price"].rolling(75).mean()
+
+    df["upper_price_slope_5"] = df["upper_price_ma_5"].pct_change(1)
+    df["upper_price_slope_25"] = df["upper_price_ma_25"].pct_change(1)
+    df["upper_price_slope_75"] = df["upper_price_ma_75"].pct_change(1)
+    df["running_time"] = df["hms"].apply(lambda x: running_time(x))
+    daily_data = df.groupby("ymd")["over_under"].agg(open_value).reset_index().rename(
+        columns={"over_under": "open_over_under"})
+    df = df.merge(daily_data, on=["ymd"], how="left")
+    df = df.dropna().reset_index(drop=True)
     return df
     
+def open_value(series):
+    return list(series)[0]
 
+def close_value(series):
+    return list(series)[-1]
 
-def _ba(hms):
-    if hms < "09-00-00":
-        ba = "before_yori"
-    elif hms < "11-30-00":
-        ba = "morning"
-    elif hms < "12-30-00":
-        ba = "lunch"
-    else:
-        ba = "afternoon"
-    return ba
+def running_time(hms):
+    dt1 = datetime.datetime.strptime(hms, "%H-%M-%S")
+    dt2 = datetime.datetime.strptime("09-00-00", "%H-%M-%S")
+    return (dt1 - dt2).seconds

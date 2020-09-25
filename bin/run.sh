@@ -11,4 +11,3 @@ cd ../script
 
 python train.py \
   --mode dev
-#py36 fetcher/main.py

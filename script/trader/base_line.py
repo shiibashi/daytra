@@ -50,12 +50,27 @@ class BaselineTrader(object):
         buy_list = []
         sell_list = []
         position = ""
+        b = "buy"
+        s = "sell"
         for log in trade_data_list:
             ymd, hms, price, status = log
-            if status == "buy":
-                position = "buy"
-                buy_list.append(price)
-            elif status == "sell":
-                position = "sell"
+            if position == "":
+                if status == b:
+                    position = b
+                    buy_list.append(price)
+                else:
+                    position = s
+                continue
+            if position == b and status == b:
+                continue
+            elif position == b and status == s:
+                position = s
                 sell_list.append(price)
+            elif position == s and status == b:
+                position = b
+                buy_list.append(price)
+            elif position == s and status == s:
+                continue
+            else:
+                raise
         return buy_list, sell_list

@@ -18,7 +18,7 @@ def nn(action_size, feature_size, dueling, noisy_dense):
     dueling_str = "1" if dueling else "0"
     noisy_dense_str = "1" if noisy_dense else "0"
     key = "{}{}".format(dueling_str, noisy_dense_str)
-
+    print(key)
     if key == "00":
         model = model_00(action_size, feature_size)
     elif key == "01":
@@ -40,8 +40,8 @@ def logloss(y_true, y_pred):
 
 def model_00(action_size, feature_size):
     input_x = Input(name="input", shape=(feature_size, ))
-    x = Dense(32, name="dense_1")(input_x)
-    x = Dense(32, name="dense_2")(input_x)
+    x = Dense(32, activation="relu", name="dense_1")(input_x)
+    x = Dense(16, activation="relu", name="dense_2")(x)
     out = Dense(action_size, name="output")(x)
     model = keras.Model(inputs=input_x, outputs=out)
     model.compile(Adam(), loss="mse")
@@ -49,8 +49,8 @@ def model_00(action_size, feature_size):
 
 def model_01(action_size, feature_size):
     input_x = Input(name="input", shape=(feature_size, ))
-    x = Dense(32, name="dense_1")(input_x)
-    x = Dense(32, name="dense_2")(input_x)
+    x = Dense(32, activation="relu", name="dense_1")(input_x)
+    x = Dense(16, activation="relu", name="dense_2")(x)
     out = noisy_dense.NoisyDense(action_size,
         activation="linear",
         kernel_initializer="lecun_uniform",
@@ -63,8 +63,8 @@ def model_01(action_size, feature_size):
 
 def model_10(action_size, feature_size):
     input_x = Input(name="input", shape=(feature_size, ))
-    x = Dense(32, name="dense_1")(input_x)
-    #x = Dense(32, name="dense_2")(input_x)
+    x = Dense(32, activation="relu", name="dense_1")(input_x)
+    x = Dense(16, activation="relu", name="dense_2")(x)
     value = Dense(16, activation="relu", name="head_value")(x)
     advantage = Dense(16, activation="relu", name="head_advantage")(x)
     value = Dense(1, name="value")(value)
@@ -80,10 +80,15 @@ def model_10(action_size, feature_size):
 
 def model_11(action_size, feature_size):
     input_x = Input(name="input", shape=(feature_size, ))
-    x = Dense(32, name="dense_1")(input_x)
+    #x = Dense(32, activation="relu", name="dense_1")(input_x)
 
-    value = Dense(16, activation="relu", name="head_value")(x)
-    advantage = Dense(16, activation="relu", name="head_advantage")(x)
+    #value = Dense(16, activation="relu", name="head_value")(x)
+    #advantage = Dense(16, activation="relu", name="head_advantage")(x)
+
+    x = Dense(8, activation="relu", name="dense_1")(input_x)
+
+    value = Dense(4, activation="relu", name="head_value")(x)
+    advantage = Dense(4, activation="relu", name="head_advantage")(x)
 
     value = Dense(1, name="value")(value)
     advantage = noisy_dense.NoisyDense(action_size,

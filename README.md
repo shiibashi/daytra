@@ -1,10 +1,16 @@
+# デイトレ用強化学習アルゴリズム
 
-# 本番データ展開コマンドメモ
+
+
+## 本番データ展開コマンドメモ
+
+```
 tar -zcvf prod_data.tar.gz prod_data/
 tar -zxvf prod_data.tar.gz
+```
 
 
-prod_dataのデータを読み込む場合
+- prod_dataのデータを読み込む場合
 ```
 cd script
 python train.py --mode prod
@@ -12,7 +18,7 @@ python train.py --mode prod
 
 
 
-test_dataのデータを読み込む場合
+- test_dataのデータを読み込む場合
 
 ```
 cd script

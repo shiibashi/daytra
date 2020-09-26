@@ -14,3 +14,4 @@ script/trader/rl/custom_xgb/my_xgb.py
 script/trader/rl/custom_xgb/README.md
 script/trader/rl/custom_xgb/my_boosting.py
 script/prod_converter_data/video_2020-09-25.mp4
+script/prod_converter_data/*

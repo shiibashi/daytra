@@ -9,5 +9,5 @@ source ~/.bashrc
 
 cd ../script
 
-python train.py \
+te2py train.py \
   --mode dev

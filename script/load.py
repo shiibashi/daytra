@@ -27,21 +27,25 @@ def _read_log_data_with_volume(dirpath):
         df = pandas.read_csv("{}/{}".format(dirpath, f), dtype=DTYPE_2)
         if "volume_sum" not in df.columns:
             continue
-        df = df[list(DTYPE_2.keys())].reset_index(drop=True)
-        
-        df_upper_price = _filter_upper_price(df)
-
-        df_over_under = _filter_over_under(df)
-        df_volume_sum = _filter_volume_sum(df)
-
-        print(len(df_upper_price), len(df_over_under), len(df_volume_sum))
-        df_upper_price["over_under"] = df_over_under["over_under"]
-        df_upper_price["delta_volume"] = df_volume_sum["delta_volume"]
-        df_upper_price["ymd"] = ymd       
+        df_upper_price = extract_data(df)      
 
         df_list.append(df_upper_price)
     merge_df = pandas.concat(df_list, axis=0).reset_index(drop=True)
     return merge_df
+
+def extract_data(df):
+    df = df[list(DTYPE_2.keys())].reset_index(drop=True)
+
+    df_upper_price = _filter_upper_price(df)
+
+    df_over_under = _filter_over_under(df)
+    df_volume_sum = _filter_volume_sum(df)
+
+    df_upper_price["over_under"] = df_over_under["over_under"]
+    df_upper_price["delta_volume"] = df_volume_sum["delta_volume"]
+    df_upper_price["ymd"] = ymd
+    return df_upper_price
+
 
 def _filter_upper_price(df):
     # upper_priceの変動でフィルタリング

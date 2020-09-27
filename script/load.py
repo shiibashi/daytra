@@ -27,13 +27,13 @@ def _read_log_data_with_volume(dirpath):
         df = pandas.read_csv("{}/{}".format(dirpath, f), dtype=DTYPE_2)
         if "volume_sum" not in df.columns:
             continue
-        df_upper_price = extract_data(df)      
+        df_upper_price = extract_data(df, ymd)
 
         df_list.append(df_upper_price)
     merge_df = pandas.concat(df_list, axis=0).reset_index(drop=True)
     return merge_df
 
-def extract_data(df):
+def extract_data(df, ymd):
     df = df[list(DTYPE_2.keys())].reset_index(drop=True)
 
     df_upper_price = _filter_upper_price(df)

@@ -1,6 +1,9 @@
 from rl_api import app
+import env
 import uvicorn
  
 
 if __name__ == '__main__':
-    uvicorn.run(app=app, host="127.0.0.1", port=8000)
+    print(env.HOST)
+    print(env.PORT)
+    uvicorn.run(app=app, host=env.HOST, port=env.PORT)

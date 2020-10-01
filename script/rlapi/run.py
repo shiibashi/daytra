@@ -2,5 +2,4 @@ from rl_api import app
 import uvicorn
  
 if __name__ == '__main__':
-    # コンソールで [$ uvicorn run:app --reload]でも可
-    uvicorn.run(app=app)
+    uvicorn.run(app=app, host="127.0.0.1", port=8000)

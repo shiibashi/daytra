@@ -1,7 +1,9 @@
 import requests
 from pydantic import BaseModel
+import env
 
-URL = "http://127.0.0.1:8000"
+
+URL = "http://{}:{}".format(env.HOST, env.PORT)
 
 def test_connect():
     print("test_connect")

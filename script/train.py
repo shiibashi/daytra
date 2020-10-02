@@ -12,18 +12,18 @@ def _arg_parse():
 
 def main(args):
     print(args.mode)
-    _init()
+    #_init()
     df = _load_data(args.mode)
     converted_df = converter.convert.run(df)
     os.makedirs("../output/converter", exist_ok=True)
-    converted_df.to_csv("../output/converter/data.csv", index=False)
+    #converted_df.to_csv("../output/converter/data.csv", index=False)
 
-    data = pandas.read_csv("../output/converter/data.csv")
-    train_data, test_data = split.split_train_test(data)
+    #data = pandas.read_csv("../output/converter/data.csv")
+    #train_data, test_data = split.split_train_test(data)
     #print(train_data)
-    print(set(test_data["ymd"]))
-    trade_report.train(train_data)
-    trade_report.run(test_data)
+    #print(set(test_data["ymd"]))
+    #trade_report.train(train_data)
+    #trade_report.run(test_data)
 
 def _init():
     os.system("rm -rf ../output")

@@ -1,6 +1,5 @@
 import pandas
 import requests
-from pydantic import BaseModel
 import env
 
 

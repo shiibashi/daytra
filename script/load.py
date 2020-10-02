@@ -28,7 +28,7 @@ def _read_log_data_with_volume(dirpath):
         if "volume_sum" not in df.columns:
             continue
         df_upper_price = extract_data(df, ymd)
-
+        print(len(df_upper_price))
         df_list.append(df_upper_price)
     merge_df = pandas.concat(df_list, axis=0).reset_index(drop=True)
     return merge_df
@@ -112,16 +112,18 @@ def _filter_volume_sum(df):
     start = df_valid["hms"][0]
     volume_list = [v]
     hms_list = [start]
+    df_valid["index"] = df_valid.index
     for i in range(len(df_valid)):
         next_hms = plus_second(start, 60)
         end_hms = plus_second(start, 600)
-        tmp = df_valid[(df_valid["hms"] >= start) & (df_valid["hms"] <= end_hms)]
+        tmp = df_valid[(df_valid["hms"] >= start) & (df_valid["hms"] <= end_hms)].reset_index(drop=True)
         if "11-30-00" <= next_hms <= "12-30-00" or len(tmp) == 0:
             start = next_hms
             continue
-        s = tmp["hms"].apply(lambda x: min(second_delta(next_hms, x), second_delta(x, next_hms)))
-        argmin_index = numpy.argmin(s)
-        h = df_valid["hms"][argmin_index]
+        tmp["delta_second"] = tmp["hms"].apply(lambda x: min(second_delta(next_hms, x), second_delta(x, next_hms)))
+        argmin_index = tmp[tmp["delta_second"] == tmp["delta_second"].min()]["index"].values[0]
+        h = tmp[tmp["delta_second"] == tmp["delta_second"].min()]["hms"].values[0]        
+
         v = df_valid[(df_valid["hms"] > start) & (df_valid["hms"] <= h)]["delta_volume"].mean()
         volume_list.append(v)
         hms_list.append(h)
@@ -138,20 +140,19 @@ def _filter_per_1m(df):
     # １分ごとにフィルタリング
     valid_index_list = [0]
     start = df["hms"][0]
+    df["index"] = df.index
     for i in range(len(df)):
         next_hms = plus_second(start, 60)
         end_hms = plus_second(start, 600)
-        tmp = df[(df["hms"] >= start) & (df["hms"] <= end_hms)]
+        tmp = df[(df["hms"] >= start) & (df["hms"] <= end_hms)].reset_index(drop=True)
         if "11-30-00" <= next_hms <= "12-30-00" or len(tmp) == 0:
             start = next_hms
             continue
-        s = tmp["hms"].apply(lambda x: min(second_delta(next_hms, x), second_delta(x, next_hms)))
-        argmin_index = numpy.argmin(s)
-        #index = s.index[argmin_index]
-        index = argmin_index
-        valid_index_list.append(index)
+        tmp["delta_second"] = tmp["hms"].apply(lambda x: min(second_delta(next_hms, x), second_delta(x, next_hms)))
+        argmin_index = tmp[tmp["delta_second"] == tmp["delta_second"].min()]["index"].values[0]
+        valid_index_list.append(argmin_index)
         start = next_hms
-        if index >= len(df)-1:
+        if argmin_index >= len(df)-1:
             print("break")
             break
     

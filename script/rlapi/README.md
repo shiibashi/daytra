@@ -22,6 +22,10 @@ uvicorn rl_api:app --reload
 - RLAPI_HOST・・・RLAPIのホスト(デフォルトは"127.0.0.1")
 - RLAPI_PORT・・・RLAPIのポート(デフォルトは"8000")
 
+windowsの場合<br>
+http://ruby.kyoto-wu.ac.jp/info-com/Softwares/Win10set.html<br>
+で設定できる
+
 # クライアント側の接続テスト
 
 ```

@@ -4,6 +4,7 @@
 tmp/*
 output/*
 script/nohup.out
+script/rlapi/nohup.out
 *.ipynb
 !model.hdf5
 prod_data

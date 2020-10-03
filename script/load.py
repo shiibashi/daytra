@@ -13,6 +13,8 @@ DTYPE_2 = {
     "volume_sum": int
 }
 
+OUTPUT_COLUMNS = ["hms", "upper_price", "over_under", "delta_volume", "ymd"]
+
 def read_log_data(dirpath):
     return _read_log_data_with_volume(dirpath)
 
@@ -130,7 +132,7 @@ def _filter_volume_sum(df):
 
         start = next_hms
         if argmin_index >= len(df_valid)-1:
-            print("break")
+            #print("break")
             break
     df_valid_per_1m = pandas.DataFrame({"hms": hms_list, "delta_volume": volume_list})
     df_interpolated = _interpolate(df_valid_per_1m, "delta_volume")

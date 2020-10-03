@@ -2,15 +2,26 @@ import pandas
 import os
 import datetime
 
-def run(df):
-    daily_data = df.groupby("ymd")["upper_price"].agg(
-        [open_value, "max", "min", close_value]
-    ).reset_index().rename(columns={"open_value": "open", "close_value": "close"})
-    for col in ["open", "max", "min", "close"]:
-        col2 = "{}_yesterday".format(col)
-        daily_data[col2] = daily_data[col].shift(1)
+OUTPUT_COLUMNS = [
+    "hms", "upper_price", "over_under", "delta_volume", "ymd",
+    # "open", "max", "min", "close",
+    #"open_yesterday", "max_yesterday", "min_yesterday", "close_yesterday",
+     "upper_price_ma_5",
+    "upper_price_ma_25", "upper_price_ma_75", "upper_price_slope_5", "upper_price_slope_25",
+    "upper_price_slope_75", "running_time", "open_over_under"
+]
 
-    df = df.merge(daily_data, on=["ymd"], how="left")
+
+def run(df):
+    #daily_data = df.groupby("ymd")["upper_price"].agg(
+    #    [open_value, "max", "min", close_value]
+    #).reset_index().rename(columns={"open_value": "open", "close_value": "close"})
+    #for col in ["open", "max", "min", "close"]:
+    #    col2 = "{}_yesterday".format(col)
+    #    daily_data[col2] = daily_data[col].shift(1)
+
+    #df = df.merge(daily_data, on=["ymd"], how="left")
+
     df = df[0:len(df):5].reset_index(drop=True)
     df["upper_price_ma_5"] = df["upper_price"].rolling(5).mean()
     df["upper_price_ma_25"] = df["upper_price"].rolling(25).mean()

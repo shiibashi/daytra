@@ -1,18 +1,10 @@
-#STATE_COLUMNS = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10"]
-#STATE_COLUMNS = ["f1", "f6", "f7", "f8", "f9", "f10"]
 STATE_COLUMNS = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "position"]
 
 def convert(df, i):
     hms = df["hms"][i]
     upper_price = df["upper_price"][i]
     over_under = df["over_under"][i]
-    #delta_volume = df["delta_volume"][i]
     ymd = df["ymd"][i]
-    open_value = df["open"][i]
-    open_value_yesterday = df["open_yesterday"][i]
-    max_value_yesterday = df["max_yesterday"][i]
-    min_value_yesterday = df["min_yesterday"][i]
-    close_value_yesterday = df["close_yesterday"][i]
     upper_price_slope_5 = df["upper_price_slope_5"][i]
     upper_price_slope_25 = df["upper_price_slope_25"][i]
     upper_price_slope_75 = df["upper_price_slope_75"][i]
@@ -32,11 +24,10 @@ def convert(df, i):
     f7 = upper_price_slope_75 * 100
     f8 = over_under / open_over_under
     return [f1, f2, f3, f4, f5, f6, f7, f8]
-    #return [f1, f6, f7, f8, f9, f10]
 
 try:
     import sapi
-    STATE_COLUMNS = ["f1", "f2", "f3", "f4", "f5", "f6", "f7"]
+    STATE_COLUMNS = ["f1", "f2", "f3", "f4", "f5", "f6", "f7", "position"]
     API = sapi.SAPI()
     API.ready(code=2413)
     def convert(df, i):

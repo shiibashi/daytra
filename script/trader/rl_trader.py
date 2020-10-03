@@ -7,6 +7,8 @@ class RLTrader(BaselineTrader):
     def __init__(self):
         self.name = "rl"
         self.agent = None
+        self.buy_tau = 0
+        self.sell_tau = -0.005
 
     def train(self, df):
         train_rl.simulate_nn(df) # backendがニューラルネットワーク
@@ -30,8 +32,6 @@ class RLTrader(BaselineTrader):
         sell_price = 0
         trade_data_list = []
         position = [0]
-        buy_tau = 0
-        sell_tau = -0.005
         buy_count = 0
         for i, row in df.iterrows():
             upper_price = row["upper_price"]
@@ -43,9 +43,10 @@ class RLTrader(BaselineTrader):
             #print(pred_arr)
             #action = self.agent.get_best_action(new_state, tau=None)
             #print(self.agent, new_state, i, hms, ymd)
-            action, q  = self.agent.get_best_action(new_state, with_q=True)
-            if (status == "sell" and action == action_class.Action.BUY and q >= buy_tau)\
-            or (status == "buy" and q >= sell_tau)\
+            #action, q  = self.agent.get_best_action(new_state, with_q=True)
+            action, q = self.predict(df, i, position)
+            if (status == "sell" and action == action_class.Action.BUY and q >= self.buy_tau)\
+            or (status == "buy" and q >= self.sell_tau)\
             or 1 <= buy_count <= 5:
                 status = "buy"
                 trade_data_list.append([ymd, hms, upper_price, "buy"])
@@ -58,3 +59,9 @@ class RLTrader(BaselineTrader):
                 position = [0]
                 buy_count = 0
         return trade_data_list
+
+    def predict(self, df, i, position):
+        state = feature_converter.convert(df, i)
+        new_state = state + position
+        action, q  = self.agent.get_best_action(new_state, with_q=True)
+        return action, q

@@ -5,10 +5,24 @@ import datetime
 import load
 
 
+def test_extract_data():
+    df = pandas.read_csv("dev_data/log_processed_2020-08-13.csv", dtype=load.DTYPE_2)
+    ymd = "2020-08-13"
+    df2 = load.extract_data(df, ymd)
+
+    cols = load.OUTPUT_COLUMNS
+    for col in df2.columns:
+        assert col in cols
+    assert len(df2.columns) == len(cols)
+
+    hms_list = _9_15_1m()
+    assert len(df2) < len(hms_list) + 2
+    for hms in df2["hms"]:
+        assert in60(hms, hms_list)
+
 def test_filter_per_1m():
     df = pandas.read_csv("dev_data/log_processed_2020-08-13.csv", dtype=load.DTYPE_2)
     df2 = load._filter_per_1m(df)
-    print(df2["hms"])
     hms_list = _9_15_1m()
     assert len(df2) < len(hms_list) + 2
     for hms in df2["hms"]:
@@ -43,3 +57,4 @@ def _9_15_1m():
 if __name__ == "__main__":
     test_filter_per_1m()
     test_filter_volume_sum()
+    test_extract_data()

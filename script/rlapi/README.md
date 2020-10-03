@@ -5,14 +5,7 @@
 
 # サーバの立ち上げスクリプト
 ```
-python run.py
-```
-
-or
-
-
-```
-uvicorn rl_api:app --reload
+python run_rlapi.py
 ```
 
 # クライアント側の設定

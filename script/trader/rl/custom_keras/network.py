@@ -43,7 +43,7 @@ def model_00(action_size, feature_size):
     x = Dense(32, activation="relu", name="dense_1")(input_x)
     x = Dense(16, activation="relu", name="dense_2")(x)
     out = Dense(action_size, name="output")(x)
-    model = keras.Model(inputs=input_x, outputs=out)
+    model = keras.Model(input_x, out)
     model.compile(Adam(), loss="mse")
     return model
 
@@ -56,7 +56,7 @@ def model_01(action_size, feature_size):
         kernel_initializer="lecun_uniform",
         bias_initializer="lecun_uniform",
         name="output")(x)
-    model = keras.Model(inputs=input_x, outputs=out)
+    model = keras.Model(input_x, out)
     model.compile(Adam(), loss="mse")
     return model
 
@@ -73,7 +73,8 @@ def model_10(action_size, feature_size):
     out = Lambda(lambda a: K.expand_dims(a[:, 0], -1) + a[:, 1:] - K.mean(a[:, 1:], axis=1, keepdims=True),
                 output_shape=(action_size, )
     )(concat)
-    model = keras.Model(input=input_x, output=out)
+    #model = keras.Model(input=input_x, output=out) # keras==2.2.5
+    model = keras.Model(input_x, out)
     model.compile(Adam(), loss="mse")
     return model
 
@@ -101,7 +102,7 @@ def model_11(action_size, feature_size):
     out = Lambda(lambda a: K.expand_dims(a[:, 0], -1) + a[:, 1:] - K.mean(a[:, 1:], axis=1, keepdims=True),
                 output_shape=(action_size, )
     )(concat)
-    model = keras.Model(input=input_x, output=out)
+    model = keras.Model(input_x, out)
     model.compile(Adam(), loss="mse")
     return model
 

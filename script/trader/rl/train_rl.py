@@ -34,7 +34,7 @@ def simulate_nn(df):
     fixed_target_network_update_steps = [1000]
     memory_type = ["per"]
     memory_size = [108000]
-    multi_step = [5, 10]
+    multi_step = [5]
     dueling = [True]
     ddqn = [True]
     noisy_dense = [False]
@@ -258,7 +258,7 @@ def _main(df, params, backend):
                 mes = "best_model updated, episode:{}, score:{}\n".format(e, score_sum)
                 logger.append({"msg": mes, "aiction_list": action_list, "best_score": score_sum})
                 agent.save_model(save_path / "best_model.h5")
-                agent.save_agent(save_path / "agent.pkl")
+                #agent.save_agent(save_path / "agent.pkl")
 
     logger.train_end()
 

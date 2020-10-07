@@ -38,10 +38,10 @@ def simulate_nn(df):
     dueling = [True]
     ddqn = [True]
     noisy_dense = [False]
-    episode = [90000]
+    episode = [50000]
     batch_size = [64]
-    score_step_by = [1000]
-    exploration_stop = [80000]
+    score_step_by = [2000]
+    exploration_stop = [40000]
 
     count = 0
     for d in itertools.product(alpha, 

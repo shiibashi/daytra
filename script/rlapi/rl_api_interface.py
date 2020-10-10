@@ -39,7 +39,7 @@ def log_to_feature(df):
     new_df = pandas.DataFrame(response_data["pandas_data"], columns=response_data["pandas_columns"])
     return new_df
 
-def rl_precit(df, position):
+def rl_predict(df, position):
     print("rl_predict")
     data = {
         "hms": list(df["hms"]),
@@ -53,7 +53,8 @@ def rl_precit(df, position):
         "upper_price_ma_25": list(df["upper_price_ma_25"]),
         "upper_price_ma_75": list(df["upper_price_ma_75"]),
         "running_time": list(df["running_time"]),
-        "open_over_under": list(df["open_over_under"])
+        "open_over_under": list(df["open_over_under"]),
+        "position": position
     }
     response = requests.post("{}/post/prod/rl_predict".format(URL), json=data)
     response_data = response.json()
@@ -84,5 +85,5 @@ if __name__ == "__main__":
     df3 = log_to_feature(dfe)
     df3.to_csv("tmp_feature.csv")
 
-    response = rl_precit(df3, [0])
+    response = rl_predict(df3, [0])
     print(response)

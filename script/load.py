@@ -45,7 +45,9 @@ def extract_data(df, ymd):
 
     df_upper_price["over_under"] = df_over_under["over_under"]
     df_upper_price["delta_volume"] = df_volume_sum["delta_volume"]
+    df_upper_price["delta_volume"] = df_upper_price["delta_volume"].fillna(0)
     df_upper_price["ymd"] = ymd
+    df_upper_price = df_upper_price.dropna(subset=["over_under"]).reset_index(drop=True)
     return df_upper_price
 
 

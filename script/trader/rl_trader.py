@@ -65,3 +65,9 @@ class RLTrader(BaselineTrader):
         new_state = state + position
         action, q  = self.agent.get_best_action(new_state, with_q=True)
         return action, q
+
+    def rename(self, action):
+        if action == action_class.Action.BUY:
+            return "buy"
+        else:
+            return "sell"

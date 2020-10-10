@@ -84,5 +84,5 @@ if __name__ == "__main__":
     df3 = log_to_feature(dfe)
     df3.to_csv("tmp_feature.csv")
 
-    response = rl_precit(df, [0])
+    response = rl_precit(df3, [0])
     print(response)

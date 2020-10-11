@@ -7,7 +7,7 @@ class RLTrader(BaselineTrader):
     def __init__(self):
         self.name = "rl"
         self.agent = None
-        self.buy_tau = 0
+        self.buy_tau = 0.005
         self.sell_tau = -0.005
 
     def train(self, df):

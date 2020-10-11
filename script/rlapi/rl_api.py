@@ -14,7 +14,7 @@ import converter.convert
 import trader.rl_trader
 
 RLTRADER = trader.rl_trader.RLTrader()
-#RLTRADER.set_agent()
+RLTRADER.set_agent()
 
 class TestData(BaseModel):
     string: str
@@ -138,14 +138,14 @@ def post_rl_predict(data: LogFeatureData):
         "open_over_under": data.open_over_under
     })
     
-    #action, q = RLTRADER.predict(df, 0, data.position)
-    #action_name = RLTRADER.rename(action)
-    action_name = "buy"
-    q = 0
+    action, q = RLTRADER.predict(df, 0, data.position)
+    action_name = RLTRADER.rename(action)
+    #action_name = "buy"
+    #q = 0
     response = {
         "action": action_name,
-        "q_value": q,
-        "buy_tau": RLTRADER.buy_tau,
-        "sell_tau": RLTRADER.sell_tau
+        "q_value": str(q),
+        "buy_tau": str(RLTRADER.buy_tau),
+        "sell_tau": str(RLTRADER.sell_tau)
     }
     return response

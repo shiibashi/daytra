@@ -35,7 +35,6 @@ def log_to_feature(df):
     }
     response = requests.post("{}/post/prod/log_to_feature".format(URL), json=data)
     response_data = response.json()
-
     new_df = pandas.DataFrame(response_data["pandas_data"], columns=response_data["pandas_columns"])
     return new_df
 
@@ -58,6 +57,9 @@ def rl_predict(df, position):
     }
     response = requests.post("{}/post/prod/rl_predict".format(URL), json=data)
     response_data = response.json()
+    response_data["q_value"] = float(response_data["q_value"])
+    response_data["buy_tau"] = float(response_data["buy_tau"])
+    response_data["sell_tau"] = float(response_data["sell_tau"])
     return response_data
 
 if __name__ == "__main__":
@@ -80,10 +82,10 @@ if __name__ == "__main__":
     df_2e = log_extract(df_2, "2020-08-13")
 
     dfe = pandas.concat([df_0e, df_1e, df_2e], axis=0).reset_index(drop=True)
-    dfe.to_csv("tmp_extracted.csv")
+    #dfe.to_csv("tmp_extracted.csv")
 
     df3 = log_to_feature(dfe)
-    df3.to_csv("tmp_feature.csv")
+    #df3.to_csv("tmp_feature.csv")
 
     response = rl_predict(df3, [0])
     print(response)

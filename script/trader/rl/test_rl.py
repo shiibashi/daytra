@@ -31,7 +31,7 @@ def _get_best_score_model_path():
         except Exception:
             continue
         a.append((dirpath, j["best_score"]))
-    sorted_a = sorted(a, key=lambda x: -x[1])
+    sorted_a = sorted(a, key=lambda x: -x[0]) # 実行日が最新のものを取得
     print(sorted_a)
     best = sorted_a[0]
     model_path = best[0]

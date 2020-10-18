@@ -38,10 +38,10 @@ def simulate_nn(df):
     dueling = [True]
     ddqn = [True]
     noisy_dense = [False]
-    episode = [50000]
+    episode = [30000]
     batch_size = [64]
     score_step_by = [2000]
-    exploration_stop = [40000]
+    exploration_stop = [20000]
 
     count = 0
     for d in itertools.product(alpha, 
@@ -206,18 +206,19 @@ def _main(df, params, backend):
             action = agent.get_action(state)
             next_state, reward, done, info = env.step(action)
             reward = reward * 2 if reward < 0 else reward
-            one_batch = (state, action, reward, next_state, done)
+            one_batch = (state, action, reward, next_state, done, info)
             state = next_state
             history.append(one_batch)
 
         for t in range(len(history)):
-            x, y, error = agent.make_mini_batch(history, t, multi_step)
+            x, y, error, weight = agent.make_mini_batch(history, t, multi_step)
             leaf = {
                 "x": x,
                 "y": y,
                 "time": t,
                 "error": error,
-                "history": history
+                "history": history,
+                "weight": weight
             }
             memory.add(leaf)
         

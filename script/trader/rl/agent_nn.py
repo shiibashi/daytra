@@ -118,11 +118,12 @@ class Agent_NN(object):
         self.epsilon = self.epsilon_lb + (self.epsilon_ub - self.epsilon_lb) * math.exp(-self.epsilon_lambda * epoch)
         x = numpy.array([leaf["x"] for leaf in batch])
         y = numpy.array([leaf["y"] for leaf in batch])
-        self.evaluator.fit(x, y, epochs=1)
+        weight = numpy.array([leaf["weight"] for leaf in batch])
+        self.evaluator.fit(x, y, epochs=1, sample_weight=weight)
 
     def make_mini_batch(self, history, t, multi_step):
-        x, y, error = self._make_batch_point(history, t, multi_step)
-        return x, y, error
+        x, y, error, weight = self._make_batch_point(history, t, multi_step)
+        return x, y, error, weight
 
     def _make_batch_point(self, history, t, multi_step):
         """distributed rl出ない場合のバッチ作成
@@ -138,6 +139,7 @@ class Agent_NN(object):
         rewards = [data[2] for data in history]
         next_states = numpy.array([data[3] for data in history])
         dones = [data[4] for data in history]
+        infos = [data[5] for data in history]
 
         estimates = self.predict_values(states)
         futures = self.predict_values_with_clone(next_states)
@@ -145,6 +147,8 @@ class Agent_NN(object):
         x = states[t]
         state = states[t]
         action = actions[t]
+        info = infos[t]
+        weight = info["weight"]
         action_index = action_class.ACTION_INDEX[action]
         tmp = estimates[t][action_index]
 
@@ -169,4 +173,4 @@ class Agent_NN(object):
         estimates[t][action_index] = reward
         y = estimates[t]
         error = math.fabs(tmp - reward)
-        return x, y, error
+        return x, y, error, weight

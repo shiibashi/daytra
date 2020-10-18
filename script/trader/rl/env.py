@@ -1,6 +1,7 @@
 import numpy
 import pandas
 import os
+import math
 
 from . import feature_converter
 from .action_class import Action
@@ -15,16 +16,23 @@ class Env(object):
         self.position = None
         self.fee = 0#1
         self.gap = 0#5
+        self.time_decay_param = 10
 
         self.trade = None
         self.initialize()
     
+    def time_decay(self, ymd_index):
+        w = 0.1 + math.exp(-self.time_decay_param * (ymd_index - 1))
+        assert 0.1 <= w <= 1
+        return w
+
     def step(self, action):
         reward = self.calc_reward(action)
         self.itr += 1
         next_state = self._state()
         done = self.done_flag()
-        info = {}
+        ymd_index = self.dataset["ymd_index"][self.itr]
+        info = {"weight": self.time_decay(ymd_index)}
         self.time = self.dataset["hms"][self.itr]
         self.ymd = self.dataset["ymd"][self.itr]
         return next_state, reward, done, info

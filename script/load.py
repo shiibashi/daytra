@@ -23,14 +23,14 @@ def _read_log_data_with_volume(dirpath):
     filepath_list = sorted(os.listdir(dirpath))
     df_list = []
     for f in filepath_list:
-        print(f)
+        print(f, flush=True)
         s = f.split("_")
         ymd = s[2].replace(".csv", "")
         df = pandas.read_csv("{}/{}".format(dirpath, f), dtype=DTYPE_2)
         if "volume_sum" not in df.columns:
             continue
         df_upper_price = extract_data(df, ymd)
-        print(len(df_upper_price))
+        print(len(df_upper_price), flush=True)
         df_list.append(df_upper_price)
     merge_df = pandas.concat(df_list, axis=0).reset_index(drop=True)
     return merge_df

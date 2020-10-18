@@ -35,6 +35,10 @@ def run(df):
         columns={"over_under": "open_over_under"})
     df = df.merge(daily_data, on=["ymd"], how="left")
     df = df.dropna().reset_index(drop=True)
+    ymd_df = df.drop_duplicates(subset=["ymd"]).sort_values(
+    "ymd")[["ymd"]].reset_index(drop=True).assign(ymd_index=lambda df: df.index
+    )
+    df = df.merge(ymd_df, on="ymd", how="inner")
     return df
     
 def open_value(series):

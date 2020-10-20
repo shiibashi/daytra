@@ -22,9 +22,11 @@ class Env(object):
         self.initialize()
     
     def time_decay(self, ymd_index):
-        w = 0.1 + math.exp(-self.time_decay_param * (ymd_index - 1))
+        w = 0.1 + 0.9 * math.exp(-self.time_decay_param * ymd_index)
+        #print(w, ymd_index)
         assert 0.1 <= w <= 1
-        return w
+        #return w
+        return 1
 
     def step(self, action):
         reward = self.calc_reward(action)

@@ -28,10 +28,13 @@ def _get_best_score_model_path():
     for dirpath in dirlist:
         try:
             j = _util.read_json(dirname / dirpath / "best_score.json" )
+            a.append((dirpath, j["best_score"]))
         except Exception:
             continue
-        a.append((dirpath, j["best_score"]))
-    sorted_a = sorted(a, key=lambda x: -x[0]) # 実行日が最新のものを取得
+    if len(a) == 1:
+        sorted_a = a
+    else:
+        sorted_a = sorted(a, key=lambda x: x[0])[-1] # 実行日が最新のものを取得
     print(sorted_a)
     best = sorted_a[0]
     model_path = best[0]

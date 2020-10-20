@@ -24,8 +24,8 @@ def split_train_test(df):
     ymd = sorted(set(df["ymd"]))
     n = 0.8
     i = int(len(ymd) * n)
-    train_df = df[df["ymd"] < ymd[-5]].reset_index(drop=True)
-    test_df = df[df["ymd"] >= ymd[-5]].reset_index(drop=True)
+    train_df = df[df["ymd"] < ymd[-10]].reset_index(drop=True)
+    test_df = df[df["ymd"] >= ymd[-10]].reset_index(drop=True)
     return train_df, test_df
 
 def simulate_nn(df):
@@ -41,7 +41,7 @@ def simulate_nn(df):
     episode = [30000]
     batch_size = [64]
     score_step_by = [2000]
-    exploration_stop = [20000]
+    exploration_stop = [40000]
 
     count = 0
     for d in itertools.product(alpha, 
@@ -235,7 +235,7 @@ def _main(df, params, backend):
                 idx = b[0]
                 p = b[1]
                 leaf = b[2]
-                _, _, new_error = agent.make_mini_batch(leaf["history"], leaf["time"], multi_step)                    
+                _, _, new_error, _ = agent.make_mini_batch(leaf["history"], leaf["time"], multi_step)                    
                 memory.update(idx, new_error)
 
         

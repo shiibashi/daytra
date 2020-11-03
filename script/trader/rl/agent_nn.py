@@ -74,7 +74,7 @@ class Agent_NN(object):
                 return action_class.Action.STAY
             else:
                 return action_class.Action.STAY, 0
-        if state[0] <= 0.166: # 10:00くらい
+        if state[0] <= 0.1: # 9:30くらい
             if not with_q:
                 return action_class.Action.STAY
             else:

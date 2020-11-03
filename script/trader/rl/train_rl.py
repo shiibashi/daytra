@@ -38,7 +38,7 @@ def simulate_nn(df):
     dueling = [True]
     ddqn = [True]
     noisy_dense = [False]
-    episode = [20000]
+    episode = [10000]
     batch_size = [64]
     score_step_by = [2000]
     exploration_stop = [50000]

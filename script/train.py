@@ -12,18 +12,15 @@ def _arg_parse():
 
 def main(args):
     print(args.mode)
-    #_init()
-    #df = _load_data(args.mode)
-    #converted_df = converter.convert.run(df)
-    #os.makedirs("../output/converter", exist_ok=True)
-    #converted_df.to_csv("../output/converter/data.csv", index=False)
+    _init()
+    df = _load_data(args.mode)
+    converted_df = converter.convert.run(df)
+    os.makedirs("../output/converter", exist_ok=True)
+    converted_df.to_csv("../output/converter/data.csv", index=False)
 
     data = pandas.read_csv("../output/converter/data.csv")
-    #train_data, test_data = split.split_train_test(data)
-    #train_data = data
-    #print(train_data)
-    #print(set(test_data["ymd"]))
-    #trade_report.train(train_data)
+    train_data = data
+    trade_report.train(train_data)
     _, test_data = split.split_train_test(data)
     print(set(test_data["ymd"]))
     trade_report.run(test_data) # 強化学習の学習で使ってるデータと被ってるから結果をみるとき注意

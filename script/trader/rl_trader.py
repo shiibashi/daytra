@@ -24,7 +24,47 @@ class RLTrader(BaselineTrader):
             day_df = df[df["ymd"] == ymd].reset_index(drop=True)
             data_list = self._trade(day_df)
             trade_data_list += data_list
+        trade_data_list = sorted(trade_data_list, key=lambda x: str(x[0])+str(x[1]))
         return trade_data_list
+
+    def score(self, trade_data_list):
+        buy_list, sell_list = self._score(trade_data_list)
+        profit = 0
+        for b, s in zip(buy_list, sell_list):
+            p = s - b
+            profit += p
+        return profit
+
+    def _score(self, trade_data_list):
+        buy_list = []
+        sell_list = []
+        position = "sell"
+        b = "buy"
+        s = "sell"
+        for log, next_log in zip(trade_data_list[:-1], trade_data_list[1:]):
+            ymd, hms, price, status = log
+            next_ymd, next_hms, next_price, next_status = next_log
+            print(log)
+            if position == b and next_ymd != ymd:
+                position = s
+                sell_list.append(price)
+                assert len(buy_list) == len(sell_list)
+            elif position == b and status == b:
+                continue
+            elif position == b and status == s:
+                position = s
+                sell_list.append(price)
+                assert len(buy_list) == len(sell_list)
+            elif position == s and status == b:
+                position = b
+                buy_list.append(price)
+                assert len(buy_list) == len(sell_list) + 1
+            elif position == s and status == s:
+                continue
+            else:
+                raise
+        return buy_list, sell_list
+
         
     def _trade(self, df):
         status = "sell"
@@ -47,7 +87,12 @@ class RLTrader(BaselineTrader):
             action = self.agent.get_best_action(new_state, with_q=False)
             q = 0
             #action, q = self.predict(df, i, position)
-            if (status == "sell" and action == action_class.Action.BUY and q >= self.buy_tau)\
+            if hms >= "14-50-00":
+                status = "sell"
+                trade_data_list.append([ymd, hms, upper_price, "sell"])
+                position = [0]
+                buy_count = 0
+            elif (status == "sell" and action == action_class.Action.BUY and q >= self.buy_tau)\
             or (status == "buy" and q >= self.sell_tau)\
             or 1 <= buy_count <= 5:
                 status = "buy"

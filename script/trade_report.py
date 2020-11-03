@@ -21,6 +21,8 @@ def run(df):
     for trader in trader_list:
         trade_data_list = trader.trade(df)
         buy_list, sell_list = trader._score(trade_data_list)
+        #print("trade_data")
+        #print(trade_data_list)
         score = trader.score(trade_data_list)
         score_with_slippage = trader.score_with_slippage(trade_data_list)
         print("trade report, ", trader.name, score, score_with_slippage, len(buy_list))

@@ -7,7 +7,7 @@ class RLTrader(BaselineTrader):
     def __init__(self):
         self.name = "rl"
         self.agent = None
-        self.buy_tau = 0.000
+        self.buy_tau = 0.010
         self.sell_tau = 0
 
     def train(self, df):
@@ -83,9 +83,9 @@ class RLTrader(BaselineTrader):
             #print(pred_arr)
             #action = self.agent.get_best_action(new_state, tau=None)
             #print(self.agent, new_state, i, hms, ymd)
-            #action, q  = self.agent.get_best_action(new_state, with_q=True)
-            action = self.agent.get_best_action(new_state, with_q=False)
-            q = 0
+            action, q  = self.agent.get_best_action(new_state, with_q=True)
+            #action = self.agent.get_best_action(new_state, with_q=False)
+            #q = 0
             #action, q = self.predict(df, i, position)
             if hms >= "14-50-00":
                 status = "sell"
@@ -93,7 +93,7 @@ class RLTrader(BaselineTrader):
                 position = [0]
                 buy_count = 0
             elif (status == "sell" and action == action_class.Action.BUY and q >= self.buy_tau)\
-            or (status == "buy" and q >= self.sell_tau)\
+            or (status == "buy" and q > self.sell_tau)\
             or 1 <= buy_count <= 5:
                 status = "buy"
                 trade_data_list.append([ymd, hms, upper_price, "buy"])
@@ -111,7 +111,7 @@ class RLTrader(BaselineTrader):
         state = feature_converter.convert(df, i)
         new_state = state + position
         action, q  = self.agent.get_best_action(new_state, with_q=True)
-        q = 0
+        #q = 0
         return action, q
 
     def rename(self, action):

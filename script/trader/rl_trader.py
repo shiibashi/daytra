@@ -7,8 +7,8 @@ class RLTrader(BaselineTrader):
     def __init__(self):
         self.name = "rl"
         self.agent = None
-        self.buy_tau = 0.010
-        self.sell_tau = 0
+        self.buy_tau = 0
+        self.sell_tau = -0.1
 
     def train(self, df):
         train_rl.simulate_nn(df) # backendがニューラルネットワーク

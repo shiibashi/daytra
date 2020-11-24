@@ -7,23 +7,32 @@ import trade_report, split, load
 def _arg_parse():
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", help="dev or prod", required=True)
+    parser.add_argument("--onlyeval", help="only eval", required=False, default="")
     args = parser.parse_args()
     return args
 
 def main(args):
     print(args.mode)
-    _init()
-    df = _load_data(args.mode)
-    converted_df = converter.convert.run(df)
-    os.makedirs("../output/converter", exist_ok=True)
-    converted_df.to_csv("../output/converter/data.csv", index=False)
+    print(args.onlyeval)
+    if args.onlyeval != "":
+        data = pandas.read_csv("../output/converter/data.csv")
+        train_data = data
+        _, test_data = split.split_train_test(data)
+        print(set(test_data["ymd"]))
+        trade_report.run(test_data)
+    else:
+        #_init()
+        df = _load_data(args.mode)
+        converted_df = converter.convert.run(df)
+        os.makedirs("../output/converter", exist_ok=True)
+        converted_df.to_csv("../output/converter/data.csv", index=False)
 
-    data = pandas.read_csv("../output/converter/data.csv")
-    train_data = data
-    trade_report.train(train_data)
-    _, test_data = split.split_train_test(data)
-    print(set(test_data["ymd"]))
-    trade_report.run(test_data) # 強化学習の学習で使ってるデータと被ってるから結果をみるとき注意
+        data = pandas.read_csv("../output/converter/data.csv")
+        train_data = data
+        trade_report.train(train_data)
+        _, test_data = split.split_train_test(data)
+        print(set(test_data["ymd"]))
+        trade_report.run(test_data) # 強化学習の学習で使ってるデータと被ってるから結果をみるとき注意
 
 def _init():
     os.system("rm -rf ../output")

@@ -92,8 +92,9 @@ class RLTrader(BaselineTrader):
                 trade_data_list.append([ymd, hms, upper_price, "sell"])
                 position = [0]
                 buy_count = 0
-            elif (status == "sell" and action == action_class.Action.BUY and q >= self.buy_tau)\
-            or (status == "buy" and q > self.sell_tau)\
+            #elif (status == "sell" and action == action_class.Action.BUY and q >= self.buy_tau)\
+            #or (status == "buy" and q > self.sell_tau)\
+            elif (action == action_class.Action.BUY and q >= self.buy_tau)\
             or 1 <= buy_count <= 5:
                 status = "buy"
                 trade_data_list.append([ymd, hms, upper_price, "buy"])
